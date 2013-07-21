@@ -1,0 +1,21 @@
+{
+  "author": "Kazuho Okui",
+  "name": "serialize_backbone_model",
+  "description": "Serrialize Backbone.Model.save method",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flinto/serialize_backbone_model.git"
+  },
+  "scripts": {
+    "test": "rake test && phantomjs test/vendor/runner.js test/index.html"
+  },
+  "dependencies": {
+    "backbone": ">=1.0.0"
+  },
+  "devDependencies": {
+    "phantomjs": "1.9.0-1",
+    "coffee-script": "1.6.3"
+  },
+  "license"       : "MIT"
+}
