@@ -1,5 +1,5 @@
 #
-# Ref #740: https://github.com/flinto/flinto/issues/740
+# Ref #740:
 #
 #  overwrite save method of Backbome.Model to serialize request to avoid
 # the requests are processed out of order on server
