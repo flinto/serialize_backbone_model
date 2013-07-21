@@ -1,6 +1,5 @@
-[![Build Status](https://travis-ci.org/flinto/serialize_backbone_model.png)](https://travis-ci.org/flinto/serialize_backbone_model)
-
 # Serialize Backbone.Model.save
+[![Build Status](https://travis-ci.org/flinto/serialize_backbone_model.png)](https://travis-ci.org/flinto/serialize_backbone_model)
 
 This is a small JavaScript code that prevents `Backbone.Model.save()` creates AJAX requests out of order, by queuing its requests.
 
