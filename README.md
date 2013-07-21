@@ -13,13 +13,13 @@ If somehow server instance 1 have high load and takes 500ms to handle the data w
 
 # What this model doesn't do
 
-Despite of its name, this module doesn't exactly queuing and serializing all requests. For example, if you quickly make 3 requests on same instance of same model, this module will skip second call so it only sends requests twice. (1st one and 3rd one.) This should work most of case, except you want to keep tracking all movement. (Such as implementing undo feature.)
+Despite of its name, this module doesn't exactly queuing and serializing all requests. For example, if you quickly make 3 requests on same instance of same model, this module will skip second call so it only sends requests twice. (1st one and 3rd one.) This should work most of case, except you want to keep tracking all movement. (such as implementing undo feature.)
 
 # Further reading
 
 There are similar project that does same thing with different approach.
 
-#### jQuery plugin for serializing all AJAX request:
+##### jQuery plugin for serializing all AJAX request
   http://blog.alexmaccaw.com/queuing-ajax-requests
 
 Works with regular $.ajax method.
