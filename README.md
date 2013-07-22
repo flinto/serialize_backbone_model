@@ -10,15 +10,19 @@ If you are making a web site that saves your model frequently in short amount of
 1. A user moves an instance to (100, 100), which makes first AJAX call (which goes to serer instance 1)
 1. The user immediately moves same instance (105, 100), makes second call immediately (which goes to server instance 2)
 
-If somehow server instance 1 have high load and takes 500ms to handle the data while server insntance 2 only takes 50ms, instance 2 saves `{X:105, Y:100}` first, then server instance 1 saves `{x:100, y:100}` later, even though final result should be `{x:100, y:100}`.
+If somehow server instance 1 have high load and takes 500ms to handle the data while server instance 2 only takes 50ms, instance 2 saves `{X:105, Y:100}` first, then server instance 1 saves `{x:100, y:100}` later, even though final result should be `{x:100, y:100}`.
 
-## What this model doesn't do
+## Incompatibility and Notes
 
-Despite of its name, this module doesn't exactly queuing and serializing all requests. For example, if you quickly make 3 requests on same instance of same model, this module will skip second call so it only sends requests twice. (1st one and 3rd one.) This should work most of case, except you want to keep tracking all movement. (such as implementing undo feature.)
+This module is intended to solve particular issues we have at Flinto. Thus, there are couple of things you need to know before you use it.
+
+This module doesn't work if your code expects and relies on that `Backbone.Model.save` returns `jqXHR`. If request gets queued, it return `null` instead of `jqXHR`. It still returns `false` if validation fails.
+
+Despite of its name, this module doesn't actually queuing and serializing all requests. If you make 3 requests on same instance of same model within very short amount of time, this module will skip the second request so it only sends requests twice. (the first one and the last one.) This should work most of case, except you want to keep tracking all movement. (such as implementing undo feature.)
 
 ## Further reading
 
-There are similar project that does same thing with different approach.
+There are couple of projects that does similar thing with different approach.
 
 ##### jQuery plugin for serializing all AJAX request
   http://blog.alexmaccaw.com/queuing-ajax-requests
