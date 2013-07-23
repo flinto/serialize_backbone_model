@@ -20,7 +20,9 @@ Just call model's save method regularly. The module takes care for you to queuin
 var model = new MyBackboneModel();
 
 model.save({x:100, y:100}); // First request
-model.save({x:105, y:100}); // This request will be queued and executed after the first request finishes
+
+model.save({x:105, y:100}); // This request will be queued and executed
+                            // after the first request finishes
 
 ```
 
