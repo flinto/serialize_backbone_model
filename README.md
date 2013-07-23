@@ -3,6 +3,27 @@
 
 This is a small bit of JavaScript code that prevents `Backbone.Model.save()` from creating AJAX requests out of order, by queuing its requests.
 
+## Installation
+
+Download and include the serialize_backbone_model-min.js file in your project after including backbone.js.
+
+```html
+<script type="text/javascript" src="serialize_backbone_model-min.js"></script>
+```
+
+## Usage
+
+Just call model's save method regularly. The module takes care for you to queuing requests.
+
+```javascript
+
+var model = new MyBackboneModel();
+
+model.save({x:100, y:100}); // First request
+model.save({x:105, y:100}); // This request will be queued and executed after the first request finishes
+
+```
+
 ## Why and when you need this?
 
 Use this if you are making a web site that saves a Backbone model frequently in short amount of time. For example, if you have a model that saves x/y coordinates on screen whenever your user moves an instance of the model, but one of your server instance takes time to respond, you will ended up saving wrong result.
