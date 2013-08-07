@@ -17,6 +17,18 @@
     }, 100);
   };
 
+  Backbone.Model.prototype.stored_saved_method = Backbone.Model.prototype.original_save;
+
+  Backbone.Model.prototype.original_save = function(key, val, options) {
+    var _this = this;
+    test("always have option", function() {
+      console.log(key, val, options);
+      ok(options !== null, "Always have options");
+      return ok(typeof val !== 'undefined', "Always have options");
+    });
+    return this.stored_saved_method(key, val, options);
+  };
+
   TestModel = (function(_super) {
     __extends(TestModel, _super);
 
@@ -46,13 +58,23 @@
             return secondSaveCalled = true;
           }
         });
+        m.val = 250;
+        m.save();
         m.val = 300;
         return m.save({}, {
           success: function() {
             var _this = this;
             return test("Third call is saved", function() {
               ok(secondSaveCalled === false, "Second call never executed");
-              return ok(history.length === 2, "Call 2 times");
+              ok(history.length === 2, "Call 2 times");
+              m.val = 400;
+              m.save();
+              return setTimeout(function() {
+                return test("Fourth call is saved", function() {
+                  ok(secondSaveCalled === false, "Second call never executed");
+                  return ok(history.length === 3, "Call 3 times");
+                });
+              }, 200);
             });
           }
         });

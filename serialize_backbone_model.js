@@ -16,7 +16,7 @@
     if (this._requestQueue.length > 1) {
       return null;
     }
-    if (key === null || typeof key === 'object') {
+    if (key === null || typeof key === 'undefined' || typeof key === 'object') {
       options = val;
     }
     if (!options) {
@@ -45,7 +45,7 @@
       }
       return dequeue();
     };
-    if (key === null || typeof key === 'object') {
+    if (key === null || typeof key === 'undefined' || typeof key === 'object') {
       val = options;
     }
     return this.original_save(key, val, options);

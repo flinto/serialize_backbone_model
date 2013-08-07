@@ -13,7 +13,7 @@ Backbone.Model.prototype.save = (key, val, options) ->
     return null
 
   # Handle both `"key", value` and `{key: value}` -style arguments.
-  options = val if (key == null || typeof key == 'object')
+  options = val if (key == null || typeof key == 'undefined' || typeof key == 'object')
 
   options = {} if !options
   success = options.success
@@ -33,6 +33,6 @@ Backbone.Model.prototype.save = (key, val, options) ->
     dequeue()
 
   # Set back `options` to `val` to handle `{key: value}` style
-  val = options if (key == null || typeof key == 'object')
+  val = options if (key == null || typeof key == 'undefined' || typeof key == 'object')
 
   @original_save(key, val, options)
