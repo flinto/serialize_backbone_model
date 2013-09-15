@@ -45,30 +45,37 @@
 
   m = new TestModel;
 
-  m.val = 100;
+  m.set('val', 100);
 
   m.save({}, {
     success: function() {
       var _this = this;
       return test("First value saved", function() {
         ok(history.length === 1, "First call is saved");
-        m.val = 200;
-        m.save({}, {
+        m.save({
+          val: 200
+        }, {
           success: function() {
             return secondSaveCalled = true;
           }
         });
-        m.val = 250;
-        m.save();
-        m.val = 300;
+        test("Save method should set value", function() {
+          console.log(m.val);
+          return ok(m.get('val') === 200, "Save method should set new value");
+        });
+        m.save({
+          val: 250
+        });
+        m.set('val', 300);
         return m.save({}, {
           success: function() {
             var _this = this;
             return test("Third call is saved", function() {
               ok(secondSaveCalled === false, "Second call never executed");
               ok(history.length === 2, "Call 2 times");
-              m.val = 400;
-              m.save();
+              m.save({
+                val: 400
+              });
               return setTimeout(function() {
                 return test("Fourth call is saved", function() {
                   ok(secondSaveCalled === false, "Second call never executed");

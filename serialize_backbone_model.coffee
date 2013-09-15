@@ -9,13 +9,23 @@ Backbone.Model.prototype.original_save = Backbone.Model.prototype.save
 Backbone.Model.prototype.save = (key, val, options) ->
   @_requestQueue = [] if !@_requestQueue
   @_requestQueue.push {key:key, val:val, options:options}
-  if @_requestQueue.length > 1
-    return null
 
+  attrs = @attributes
   # Handle both `"key", value` and `{key: value}` -style arguments.
-  options = val if (key == null || typeof key == 'undefined' || typeof key == 'object')
+  if (key == null || typeof key == 'undefined' || typeof key == 'object')
+    attrs = key
+    options = val
+  else
+    (attrs = {})[key] = val
 
   options = {} if !options
+
+  # If we're not waiting and attributes exist, save acts as `set(attr).save(null, opts)`.
+  return false if (attrs && (!options || !options.wait) && !@set(attrs, options))
+
+  if @_requestQueue.length > 1
+    return false
+
   success = options.success
   error   = options.error
 

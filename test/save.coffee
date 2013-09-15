@@ -25,25 +25,26 @@ class TestModel extends Backbone.Model
 
 
 m = new TestModel
-m.val = 100
+m.set('val', 100)
 m.save {}, success: () ->
   test "First value saved", () =>
     ok history.length == 1, "First call is saved"
 
-    m.val = 200
-    m.save {}, success: () -> secondSaveCalled = true
+    m.save {val:200}, success: () -> secondSaveCalled = true
 
-    m.val = 250
-    m.save()
+    test "Save method should set value", () =>
+      console.log m.val
+      ok m.get('val') == 200, "Save method should set new value"
 
-    m.val = 300
+    m.save(val:250)
+
+    m.set('val', 300)
     m.save {}, success: () ->
       test "Third call is saved", () =>
         ok secondSaveCalled == false, "Second call never executed"
         ok history.length == 2, "Call 2 times"
 
-        m.val = 400
-        m.save()
+        m.save(val:400)
 
         setTimeout () =>
           test "Fourth call is saved", () =>

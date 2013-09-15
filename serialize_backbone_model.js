@@ -3,7 +3,7 @@
   Backbone.Model.prototype.original_save = Backbone.Model.prototype.save;
 
   Backbone.Model.prototype.save = function(key, val, options) {
-    var dequeue, error, success,
+    var attrs, dequeue, error, success,
       _this = this;
     if (!this._requestQueue) {
       this._requestQueue = [];
@@ -13,14 +13,21 @@
       val: val,
       options: options
     });
-    if (this._requestQueue.length > 1) {
-      return null;
-    }
+    attrs = this.attributes;
     if (key === null || typeof key === 'undefined' || typeof key === 'object') {
+      attrs = key;
       options = val;
+    } else {
+      (attrs = {})[key] = val;
     }
     if (!options) {
       options = {};
+    }
+    if (attrs && (!options || !options.wait) && !this.set(attrs, options)) {
+      return false;
+    }
+    if (this._requestQueue.length > 1) {
+      return false;
     }
     success = options.success;
     error = options.error;
