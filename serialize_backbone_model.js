@@ -2,6 +2,8 @@
 (function() {
   Backbone.Model.prototype.original_save = Backbone.Model.prototype.save;
 
+  Backbone.Model.prototype.original_destroy = Backbone.Model.prototype.destroy;
+
   Backbone.Model.prototype.save = function(key, val, options) {
     var attrs, dequeue, error, success,
       _this = this;
@@ -26,6 +28,7 @@
     if (attrs && (!options || !options.wait) && !this.set(attrs, options)) {
       return false;
     }
+    this._saveCalled = true;
     if (this._requestQueue.length > 1) {
       return false;
     }
@@ -56,6 +59,19 @@
       val = options;
     }
     return this.original_save(key, val, options);
+  };
+
+  Backbone.Model.prototype.destroy = function(options) {
+    var _this = this;
+    if (!this.get('id') && this._saveCalled) {
+      return this.on('change:id', function() {
+        if (_this.get('id')) {
+          return _this.original_destroy(options);
+        }
+      });
+    } else {
+      return this.original_destroy(options);
+    }
   };
 
 }).call(this);

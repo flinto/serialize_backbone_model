@@ -29,6 +29,13 @@
     return this.stored_saved_method(key, val, options);
   };
 
+  Backbone.Model.prototype.stored_destroy_method = Backbone.Model.prototype.original_destroy;
+
+  Backbone.Model.prototype.original_destroy = function(options) {
+    options.success('callback');
+    return this.destroyed = true;
+  };
+
   TestModel = (function(_super) {
     __extends(TestModel, _super);
 
@@ -37,7 +44,9 @@
       return _ref;
     }
 
-    TestModel.prototype.initialize = function() {};
+    TestModel.prototype.initialize = function() {
+      return this.destroyed = false;
+    };
 
     return TestModel;
 
@@ -77,9 +86,26 @@
                 val: 400
               });
               return setTimeout(function() {
-                return test("Fourth call is saved", function() {
+                test("Fourth call is saved", function() {
                   ok(secondSaveCalled === false, "Second call never executed");
-                  return ok(history.length === 3, "Call 3 times");
+                  ok(history.length === 3, "Call 3 times");
+                  return ok(typeof m.get('id') === 'undefined', 'Model id is not set');
+                });
+                return test("delay destroy method", function() {
+                  m.destroy({
+                    success: function(ret) {
+                      return test("destroy callback called", function() {
+                        return ok(ret === 'callback', "callback is called");
+                      });
+                    }
+                  });
+                  ok(m.destroyed === false, 'destroy method hasn\'t called');
+                  m.set('id', 1);
+                  return setTimeout(function() {
+                    return test("destroy method called", function() {
+                      return ok(m.destroyed, 'destroy method has been called');
+                    });
+                  }, 100);
                 });
               }, 200);
             });

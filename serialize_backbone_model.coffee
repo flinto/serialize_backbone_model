@@ -5,6 +5,7 @@
 # the requests are processed out of order on server
 #
 Backbone.Model.prototype.original_save = Backbone.Model.prototype.save
+Backbone.Model.prototype.original_destroy = Backbone.Model.prototype.destroy
 
 Backbone.Model.prototype.save = (key, val, options) ->
   @_requestQueue = [] if !@_requestQueue
@@ -22,6 +23,8 @@ Backbone.Model.prototype.save = (key, val, options) ->
 
   # If we're not waiting and attributes exist, save acts as `set(attr).save(null, opts)`.
   return false if (attrs && (!options || !options.wait) && !@set(attrs, options))
+
+  @_saveCalled = true
 
   if @_requestQueue.length > 1
     return false
@@ -46,3 +49,10 @@ Backbone.Model.prototype.save = (key, val, options) ->
   val = options if (key == null || typeof key == 'undefined' || typeof key == 'object')
 
   @original_save(key, val, options)
+
+Backbone.Model.prototype.destroy = (options) ->
+  if !@get('id') && @_saveCalled
+    # Ref #1090 delay destroy call if model doesn't have an id yet
+    @on 'change:id', () => @original_destroy(options) if @get('id')
+  else
+    @original_destroy(options)

@@ -19,8 +19,15 @@ Backbone.Model.prototype.original_save = (key, val, options) ->
     ok typeof val != 'undefined', "Always have options"
   @stored_saved_method(key, val, options)
 
+Backbone.Model.prototype.stored_destroy_method = Backbone.Model.prototype.original_destroy
+
+Backbone.Model.prototype.original_destroy = (options) ->
+  options.success('callback')
+  @destroyed = true
+
 class TestModel extends Backbone.Model
   initialize: ->
+    @destroyed = false
     #
 
 
@@ -50,5 +57,18 @@ m.save {}, success: () ->
           test "Fourth call is saved", () =>
             ok secondSaveCalled == false, "Second call never executed"
             ok history.length == 3, "Call 3 times"
+            ok typeof m.get('id') == 'undefined', 'Model id is not set'
+
+          test "delay destroy method", () =>
+            m.destroy success: (ret) =>
+              test "destroy callback called", () =>
+                ok ret == 'callback', "callback is called"
+
+            ok m.destroyed == false, 'destroy method hasn\'t called'
+            m.set('id', 1)
+            setTimeout () =>
+              test "destroy method called", () =>
+                ok m.destroyed, 'destroy method has been called'
+            , 100
         , 200
 
